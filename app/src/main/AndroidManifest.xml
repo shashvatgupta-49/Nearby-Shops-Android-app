@@ -213,7 +213,21 @@
 
 
         <activity android:name="org.nearbyshops.whitelabelapp.CartAndOrder.CartItemList.CartItemList"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="nearbyshops" android:host="cart" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="org.nearbyshops.whitelabelapp.publish.EngageBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.engage.action.shopping.PUBLISH_SHOPPING_CART" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name="org.nearbyshops.whitelabelapp.CartAndOrder.Checkout.PlaceOrder"
             android:screenOrientation="portrait"/>

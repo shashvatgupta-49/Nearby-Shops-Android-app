@@ -14,6 +14,8 @@ import com.google.android.libraries.places.api.Places;
 
 
 
+import org.nearbyshops.whitelabelapp.publish.ShoppingCartPublisher;
+
 /**
  * Created by sumeet on 12/5/16.
  */
@@ -67,6 +69,8 @@ public class MyApplication extends MultiDexApplication {
         ApplicationState.getInstance().setMyApplication(this);
 //        Mapbox.getInstance(this,getString(R.string.fake_key));
         createNotificationChannel();
+
+        ShoppingCartPublisher.INSTANCE.publishPeriodically(this);
     }
 
 

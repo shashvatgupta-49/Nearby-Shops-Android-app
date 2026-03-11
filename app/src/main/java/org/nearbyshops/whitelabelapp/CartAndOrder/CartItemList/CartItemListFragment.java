@@ -47,6 +47,8 @@ import org.nearbyshops.whitelabelapp.CartAndOrder.ViewHoldersOrders.ViewHolderDe
 import org.nearbyshops.whitelabelapp.ViewHolders.ViewHoldersCommon.ViewHolderButton;
 import org.nearbyshops.whitelabelapp.ViewHolders.ViewHoldersCommon.ViewHolderEmptyScreenFullScreen;
 
+import org.nearbyshops.whitelabelapp.publish.ShoppingCartPublisher;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -551,6 +553,7 @@ public class CartItemListFragment extends Fragment
                 {
                     makeRefreshNetworkCall();
                     showToastMessage("Item Removed");
+                    ShoppingCartPublisher.INSTANCE.publishOneTime(getActivity());
                 }
 
                 adapter.notifyDataSetChanged();

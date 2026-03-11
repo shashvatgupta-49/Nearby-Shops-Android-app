@@ -25,6 +25,13 @@ public class CartItemList extends AppCompatActivity{
         setContentView(R.layout.activity_fragment_container);
         ButterKnife.bind(this);
 
+        if (getIntent().getData() != null && "nearbyshops".equals(getIntent().getData().getScheme())) {
+            String shopId = getIntent().getData().getLastPathSegment();
+            if (shopId != null) {
+                getIntent().putExtra("shop_id", Integer.parseInt(shopId));
+            }
+        }
+
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 

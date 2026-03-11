@@ -33,6 +33,7 @@ import org.nearbyshops.whitelabelapp.Preferences.PrefGeneral;
 import org.nearbyshops.whitelabelapp.Preferences.PrefLogin;
 import org.nearbyshops.whitelabelapp.Preferences.PrefShopHome;
 import org.nearbyshops.whitelabelapp.R;
+import org.nearbyshops.whitelabelapp.publish.ShoppingCartPublisher;
 import org.nearbyshops.whitelabelapp.Utility.UtilityFunctions;
 
 import retrofit2.Call;
@@ -506,6 +507,7 @@ public class ViewHolderShopItemButton extends RecyclerView.ViewHolder{
                         if (response.code() == 201) {
 
                             Toast.makeText(context, "Add to cart successful !", Toast.LENGTH_SHORT).show();
+                            ShoppingCartPublisher.INSTANCE.publishOneTime(context);
 
 //                            getCartStats(true,getLayoutPosition(),false);
 
@@ -590,6 +592,8 @@ public class ViewHolderShopItemButton extends RecyclerView.ViewHolder{
                             showToastMessage("Item Removed !");
 
                             addToCartText.setText("Add to Cart");
+
+                            ShoppingCartPublisher.INSTANCE.publishOneTime(context);
 
 
 
@@ -678,6 +682,7 @@ public class ViewHolderShopItemButton extends RecyclerView.ViewHolder{
                         if (response.code() == 200) {
 
                             Toast.makeText(context, "Update cart successful !", Toast.LENGTH_SHORT).show();
+                            ShoppingCartPublisher.INSTANCE.publishOneTime(context);
 //                            getCartStats(false,getLayoutPosition(),false);
 
 

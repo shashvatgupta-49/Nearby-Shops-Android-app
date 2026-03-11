@@ -49,6 +49,7 @@ import org.nearbyshops.whitelabelapp.Services.NonStopServices.PersistentLocation
 import org.nearbyshops.whitelabelapp.UtilityScreens.BannerSlider.ViewHolderBannerListItem;
 import org.nearbyshops.whitelabelapp.PlacePickers.PlacePickerGoogleMaps.AddressPickerFragment;
 import org.nearbyshops.whitelabelapp.ViewHolders.ViewHolderShopItem.ViewHolderShopItemInstacart;
+import org.nearbyshops.whitelabelapp.publish.EngageWorker;
 import org.nearbyshops.whitelabelapp.ViewModels.ViewModelItemDetail;
 import org.nearbyshops.whitelabelapp.ViewModels.ViewModelShopDetail;
 import org.nearbyshops.whitelabelapp.InventoryOrders.Deprecated.InventoryDeliveryByVendor.Fragment.DeliveryByVendorFragment;
@@ -162,6 +163,7 @@ public interface NetComponent {
     void Inject(CartItemListFragment cartItemListFragment);
 
     void Inject(CartsListFragment cartsListFragment);
+    void Inject(EngageWorker worker);
 
     void Inject(FragmentShopsList fragmentShopsList);
 

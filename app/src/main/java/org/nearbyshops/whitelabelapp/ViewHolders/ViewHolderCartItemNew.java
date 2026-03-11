@@ -30,6 +30,8 @@ import org.nearbyshops.whitelabelapp.Preferences.PrefCurrency;
 import org.nearbyshops.whitelabelapp.Preferences.PrefGeneral;
 import org.nearbyshops.whitelabelapp.R;
 
+import org.nearbyshops.whitelabelapp.publish.ShoppingCartPublisher;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -247,6 +249,7 @@ public class ViewHolderCartItemNew extends RecyclerView.ViewHolder {
                 if(response.code() == 200)
                 {
                     showToastMessage("Item Removed");
+                    ShoppingCartPublisher.INSTANCE.publishOneTime(context);
 
                     // refresh the list
 //                        makeNetworkCall();
@@ -298,6 +301,8 @@ public class ViewHolderCartItemNew extends RecyclerView.ViewHolder {
 
                 if(response.code() == 200)
                 {
+                    ShoppingCartPublisher.INSTANCE.publishOneTime(context);
+
                     if(fragment instanceof ListItemClick)
                     {
                         ((ListItemClick) fragment).notifyUpdate(cartItem);

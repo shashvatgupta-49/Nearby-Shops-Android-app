@@ -167,7 +167,17 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:2.28.3"
 
     implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
     kapt 'com.jakewharton:butterknife-compiler:10.2.3'
+
+    // Engage SDK
+    implementation 'com.google.android.engage:engage-core:1.5.11'
+
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3'
 
     testImplementation 'junit:junit:4.13.2'
 
