@@ -50,9 +50,9 @@ object ItemToEntityConverter {
 
         val statusString = OrderStatusHomeDelivery.getStatusString(order.statusCurrent)
         val orderType = if (order.deliveryMode == Order.DELIVERY_MODE_PICKUP_FROM_SHOP) {
-            ShoppingOrderType.IN_STORE_PICKUP
+            ShoppingOrderType.TYPE_IN_STORE_PICKUP
         } else {
-            ShoppingOrderType.SAME_DAY_DELIVERY
+            ShoppingOrderType.TYPE_SAME_DAY_DELIVERY
         }
 
         val builder = ShoppingOrderTrackingCluster.Builder()
