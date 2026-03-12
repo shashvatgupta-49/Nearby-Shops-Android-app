@@ -11,6 +11,8 @@ class EngageBroadcastReceiver : BroadcastReceiver() {
         val action = intent.action
         if (action == "com.google.android.engage.action.shopping.PUBLISH_SHOPPING_CART") {
             ShoppingCartPublisher.publishOneTime(context)
+        } else if (action == "com.google.android.engage.action.shopping.PUBLISH_SHOPPING_ORDER_TRACKING_CLUSTER") {
+            OrderPublisher.publishOneTime(context)
         }
     }
 }

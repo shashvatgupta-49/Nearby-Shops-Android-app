@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import kotlinx.coroutines.tasks.await
 import org.nearbyshops.whitelabelapp.API.CartStatsService
+import org.nearbyshops.whitelabelapp.API.OrdersAPI.OrderService
 import org.nearbyshops.whitelabelapp.DaggerComponentBuilder
 import org.nearbyshops.whitelabelapp.Model.ModelRoles.User
 import org.nearbyshops.whitelabelapp.Model.ModelStats.CartStats
@@ -25,6 +26,9 @@ class EngageWorker(context: Context, workerParams: WorkerParameters) :
 
     @Inject
     lateinit var cartStatsService: CartStatsService
+
+    @Inject
+    lateinit var orderService: OrderService
 
     private val client = AppEngageShoppingClient(context)
     private val clusterRequestFactory = ClusterRequestFactory()
@@ -42,6 +46,7 @@ class EngageWorker(context: Context, workerParams: WorkerParameters) :
         val publishType = inputData.getString("PUBLISH_TYPE")
         return when (publishType) {
             "SHOPPING_CART" -> publishShoppingCart()
+            "ORDER_TRACKING" -> publishOrderTracking()
             else -> Result.failure()
         }
     }
@@ -79,6 +84,40 @@ class EngageWorker(context: Context, workerParams: WorkerParameters) :
             }
         } catch (e: Exception) {
             Log.e("EngageWorker", "Error fetching carts", e)
+            Result.retry()
+        }
+    }
+
+    private suspend fun publishOrderTracking(): Result {
+        val user: User? = PrefLogin.getUser(applicationContext)
+        if (user == null) {
+            Log.d("EngageWorker", "User not logged in, skipping publish")
+            return Result.success()
+        }
+
+        return try {
+            val response = orderService.getOrdersForEndUser(
+                PrefLogin.getAuthorizationHeader(applicationContext),
+                null, user.userID, null, null, null, null,
+                true, false, true, false, null, null, 10, 0, false, false
+            ).execute()
+
+            if (response.isSuccessful && response.body() != null) {
+                val orders = response.body()!!.results
+                if (orders != null && orders.isNotEmpty()) {
+                    val publishTask: Task<Void> = client.publishShoppingOrderTrackingCluster(
+                        clusterRequestFactory.constructOrderTrackingRequest(orders[0])
+                    )
+                    publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
+                } else {
+                    client.deleteShoppingOrderTrackingCluster().await()
+                    Result.success()
+                }
+            } else {
+                Result.retry()
+            }
+        } catch (e: Exception) {
+            Log.e("EngageWorker", "Error fetching orders", e)
             Result.retry()
         }
     }

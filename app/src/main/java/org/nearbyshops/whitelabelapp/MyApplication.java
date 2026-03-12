@@ -14,6 +14,7 @@ import com.google.android.libraries.places.api.Places;
 
 
 
+import org.nearbyshops.whitelabelapp.publish.OrderPublisher;
 import org.nearbyshops.whitelabelapp.publish.ShoppingCartPublisher;
 
 /**
@@ -71,6 +72,7 @@ public class MyApplication extends MultiDexApplication {
         createNotificationChannel();
 
         ShoppingCartPublisher.INSTANCE.publishPeriodically(this);
+        OrderPublisher.INSTANCE.publishPeriodically(this);
     }
 
 
