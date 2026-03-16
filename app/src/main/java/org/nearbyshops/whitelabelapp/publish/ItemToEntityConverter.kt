@@ -2,9 +2,12 @@ package org.nearbyshops.whitelabelapp.publish
 
 import android.net.Uri
 import com.google.android.engage.common.datamodel.Image
+import com.google.android.engage.common.datamodel.Price
 import com.google.android.engage.shopping.datamodel.ShoppingCart
+import com.google.android.engage.shopping.datamodel.ShoppingEntity
 import com.google.android.engage.shopping.datamodel.ShoppingOrderTrackingCluster
 import com.google.android.engage.shopping.datamodel.ShoppingOrderType
+import org.nearbyshops.whitelabelapp.Model.Item
 import org.nearbyshops.whitelabelapp.Model.ModelCartOrder.Order
 import org.nearbyshops.whitelabelapp.Model.ModelStats.CartStats
 import org.nearbyshops.whitelabelapp.MyApplication
@@ -32,6 +35,48 @@ object ItemToEntityConverter {
                 Image.Builder()
                     .setImageUri(Uri.parse(logoUrl))
                     .setAccessibilityText(shop?.shopName ?: "Shop Logo")
+                    .build()
+            )
+        }
+
+        return builder.build()
+    }
+
+    fun convert(item: Item): ShoppingEntity {
+        val serverUrl = PrefGeneral.getServerURL(MyApplication.getAppContext())
+        val imageUrl = if (item.itemImageURL != null) {
+            "$serverUrl/images/${item.itemImageURL}"
+        } else {
+            null
+        }
+
+        val builder = ShoppingEntity.Builder()
+            .setTitle(item.itemName)
+            .setEntityId(item.itemID.toString())
+            .setActionLinkUri(Uri.parse("nearbyshops://item_detail/${item.itemID}"))
+
+        if (imageUrl != null) {
+            builder.addPosterImage(
+                Image.Builder()
+                    .setImageUri(Uri.parse(imageUrl))
+                    .setAccessibilityText(item.itemName)
+                    .build()
+            )
+        }
+
+        if (item.discountedPrice > 0 && item.discountedPrice < item.listPrice) {
+            builder.setPrice(
+                Price.Builder()
+                    .setCurrentPrice(item.discountedPrice.toString())
+                    .setStrikethroughPrice(item.listPrice.toString())
+                    .build()
+            )
+            val discountPercent = ((item.listPrice - item.discountedPrice) / item.listPrice) * 100
+            builder.setCallout(String.format("%.0f%% Off", discountPercent))
+        } else if (item.listPrice > 0) {
+            builder.setPrice(
+                Price.Builder()
+                    .setCurrentPrice(item.listPrice.toString())
                     .build()
             )
         }

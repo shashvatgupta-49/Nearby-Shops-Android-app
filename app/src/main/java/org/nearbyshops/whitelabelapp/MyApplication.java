@@ -15,6 +15,7 @@ import com.google.android.libraries.places.api.Places;
 
 
 import org.nearbyshops.whitelabelapp.publish.OrderPublisher;
+import org.nearbyshops.whitelabelapp.publish.ProductPublisher;
 import org.nearbyshops.whitelabelapp.publish.ShoppingCartPublisher;
 
 /**
@@ -73,6 +74,7 @@ public class MyApplication extends MultiDexApplication {
 
         ShoppingCartPublisher.INSTANCE.publishPeriodically(this);
         OrderPublisher.INSTANCE.publishPeriodically(this);
+        ProductPublisher.INSTANCE.publishPeriodically(this);
     }
 
 

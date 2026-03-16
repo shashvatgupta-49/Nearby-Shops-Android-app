@@ -13,6 +13,8 @@ class EngageBroadcastReceiver : BroadcastReceiver() {
             ShoppingCartPublisher.publishOneTime(context)
         } else if (action == "com.google.android.engage.action.shopping.PUBLISH_SHOPPING_ORDER_TRACKING_CLUSTER") {
             OrderPublisher.publishOneTime(context)
+        } else if (action == "com.google.android.engage.action.PUBLISH_RECOMMENDATION") {
+            ProductPublisher.publishOneTime(context)
         }
     }
 }

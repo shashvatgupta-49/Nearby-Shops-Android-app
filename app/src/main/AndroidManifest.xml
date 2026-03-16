@@ -230,6 +230,9 @@
             <intent-filter>
                 <action android:name="com.google.android.engage.action.shopping.PUBLISH_SHOPPING_ORDER_TRACKING_CLUSTER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.engage.action.PUBLISH_RECOMMENDATION" />
+            </intent-filter>
         </receiver>
 
         <activity android:name="org.nearbyshops.whitelabelapp.CartAndOrder.Checkout.PlaceOrder"

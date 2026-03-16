@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import kotlinx.coroutines.tasks.await
 import org.nearbyshops.whitelabelapp.API.CartStatsService
+import org.nearbyshops.whitelabelapp.API.ItemService
 import org.nearbyshops.whitelabelapp.API.OrdersAPI.OrderService
 import org.nearbyshops.whitelabelapp.DaggerComponentBuilder
 import org.nearbyshops.whitelabelapp.Model.ModelRoles.User
@@ -29,6 +30,9 @@ class EngageWorker(context: Context, workerParams: WorkerParameters) :
 
     @Inject
     lateinit var orderService: OrderService
+
+    @Inject
+    lateinit var itemService: ItemService
 
     private val client = AppEngageShoppingClient(context)
     private val clusterRequestFactory = ClusterRequestFactory()
@@ -47,6 +51,7 @@ class EngageWorker(context: Context, workerParams: WorkerParameters) :
         return when (publishType) {
             "SHOPPING_CART" -> publishShoppingCart()
             "ORDER_TRACKING" -> publishOrderTracking()
+            "RECOMMENDATIONS" -> publishRecommendations()
             else -> Result.failure()
         }
     }
@@ -118,6 +123,37 @@ class EngageWorker(context: Context, workerParams: WorkerParameters) :
             }
         } catch (e: Exception) {
             Log.e("EngageWorker", "Error fetching orders", e)
+            Result.retry()
+        }
+    }
+
+    private suspend fun publishRecommendations(): Result {
+        return try {
+            val response = itemService.getItemsEndpoint(
+                null, false, null, false,
+                PrefLocation.getLatitudeSelected(applicationContext),
+                PrefLocation.getLongitudeSelected(applicationContext),
+                null, null, null, null, null, null, 20, 0, false, false
+            ).execute()
+
+            if (response.isSuccessful && response.body() != null) {
+                val allItems = response.body()!!.results
+                val discountedItems = allItems?.filter { it.discountedPrice > 0 && it.discountedPrice < it.listPrice }
+
+                if (discountedItems != null && discountedItems.isNotEmpty()) {
+                    val publishTask: Task<Void> = client.publishRecommendationClusters(
+                        clusterRequestFactory.constructRecommendationRequest(discountedItems, "Top Deals Near You")
+                    )
+                    publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
+                } else {
+                    client.deleteRecommendationsClusters().await()
+                    Result.success()
+                }
+            } else {
+                Result.retry()
+            }
+        } catch (e: Exception) {
+            Log.e("EngageWorker", "Error fetching recommendations", e)
             Result.retry()
         }
     }
